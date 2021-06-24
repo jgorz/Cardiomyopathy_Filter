@@ -1,0 +1,97 @@
+###These three lines must be manually input
+input="" #input .txt file
+Sample="" #name your sample, this will be used for output files
+Min_QUAL= #numeric value
+
+##outputs
+filter_qual_output="minQUAL_"$Min_QUAL"_$Sample.txt"
+exonic_output="Exonic_"$Sample".txt"
+LOF_output="LOF"$Sample".txt"
+HCMgenes_output="HCMgenes_minQUAL_"$Min_QUAL"$Sample.txt"
+DCMgenes_output="DCMgenes_minQUAL_"$Min_QUAL"$Sample.txt"
+ARVCgenes_output="ARVCgenes_minQUAL_"$Min_QUAL"$Sample.txt"
+CARDIOMgenes_output="CARDIOMgenes_minQUAL_"$Min_QUAL"$Sample.txt"
+
+
+#Genes assocaited with cardiomyopathy and the non-cm-genes that are called via grep function that must be excluded
+HCM_genes="ACTC1\|ACTN2\|ANKRD1\|CSRP3\|FHL1\|GLA\|LAMP2\|MYBPC3\|MYH7\|MYL2\|MYL3\|MYOZ2\|NEXN\|PLN\|PRKAG2\|TNNC1\|TNNI3\|TNNT2\|TPM1\|TTR"
+remove_nonHCM_genes="ANKRD13C\|HAPLN2\|FIGLA\|ANKRD17\|HAPLN1\|ANKRD18B\|ANSKRDD13A\|PAPLN\|HAPLN3\|ANKRD11\|ANKRD12\|HAPLN4\|ANKRD13B"
+
+DCM_genes="ABCC9\|ACTC1\|ACTN2\|ANKRD1\|CASQ2\|CAV3\|CRYAB\|CSRP3\|DES\|DSG2\|DSC2\|DSP\|DTNA\|EMD\|FHL1\|FLH2\|GLA\|JUP\|LAMA4\|LAMP2\|LDB3\|MYBPC3\|MYH6\|MYH7\|MYL2\|MYL3\|MYLK2\|MYOZ2\|NEXN\|PKP2\|PLN\|PRKAG2\|RYR2\|SCN5A\|SGCD\|TAZ\|TCAP\|TMEM43\|TNNC1\|TNNI3\|TNNT2\|TPM1\|TTN\|TTR\|VCL"
+remove_nonDCM_genes="DSPP\|CTDSPL\|DESI1\|DESI2\|CTDSPL2\|DESI1\|CTDSP2\|ANKRD13C\|HAPLN2\|FIGLA\|ANKRD17\|HAPLN1\|ANKRD18B\|ANSKRD16\|APLNR\|DAGLA\|ANKRD13A\|PAPLN\|HAPLN3\|ANKRD11\|ANKRD12|HAPLN4\|ANKRD13B\|CTTNBP2NL\|LEMD1\|LEMD2\|CTTNBP2\|ANKRD10\|RTTN\|PHLDB3\|APLN"
+
+ARVC_genes="DES\|DSC2\|DSG2\|DSP\|JUP\|LMNA\|PKP2\|TMEM43\|CTNNA3\|TGFB3"
+remove_nonARVC_genes="DSPP\|CTDSPL\|DESI1\|DESI2\|CTDSPL2\|DESI1\|CTDSP2"
+
+Cardiom_genes="AATK\|ABCA1\|ABCC9\|ACCN1\|ACTA2\|ACTC1\|ACTN2\|ADAMTS9\|ADK\|ADRB1\|ADRB2\|AGGF1\|AKAP9\|ALMS1\|AMPH\|ANK1\|ANK2\|ANKRD1\|AP3M1\|APOA1\|APOA2\|APOB\|APOC2\|APOC3\|APOC4\|APOE\|APP\|ARID3B\|ARRB1\|ASTN1\|ATG10\|ATOH8\|ATP1A1\|ATP1A2\|ATP1A3\|ATP1A4\|ATP1B1\|ATP1B2\|ATP1B3\|ATP2A1\|ATP2A2\|ATP2A3\|ATP2B1\|ATP2B2\|BCL2L14\|BIN1\|BMP2\|BMP4\|BMP6\|BMPR2\|BRAF\|C17orf91\|C1orf203\|C20orf94\|C22orf25\|C3orf32\|C6orf155\|C6orf204\|C9orf5\|CACNA1C\|CACNA1D\|CACNA1G\|CACNA1H\|CACNA1S\|CACNA2D1\|CACNA2D2\|CACNB2\|CALCR\|CALR\|CAMK2A\|CAMK2B\|CAMK2D\|CAMK2G\|CASQ2\|CAV1\|CAV2\|CAV3\|CCDC73\|CCNH\|CDK14\|CETP\|CFTR\|CHCHD4\|CHD5\|CHRM2\|CLCA4\|CLCN3\|CNOT1\|COL27A1\|COL3A1\|COL4A1\|COL4A2\|COPZ2\|CRYAB\|CSRP3\|CST3\|CTF1\|CUX2\|DALRD3\|DBH\|DES\|DHCR24\|DNAJC19\|DNAL4\|DNM3\|DSC2\|DSG2\|DSP\|DTNA\|ECM1\|EGFL7\|EIF1\|EIF4H\|ELMO3\|EML2\|ENPP1\|ESR1\|ESR2\|EVI2A\|EVI2B\|EYA4\|FAM117A\|FAS\|FBN1\|FGA\|FKBP2\|FKTN\|FLT4\|FOXC2\|FOXN3\|FUBP1\|GAA\|GALE\|GATA4\|GATA6\|GBA\|GGCX\|GINS3\|GJA1\|GJA5\|GNB1L\|GPC1\|GPD1L\|GRID1\|GRM8\|GSN\|GTPBP1\|HCN1\|HCN2\|HCN4\|HMGCL\|HMGCS2\|HOPX\|HOXC4\|HOXC5\|HPN\|HRAS\|IFIT1\|IFIT2\|IFIT3\|IFIT5\|ILK\|IMMP1L\|IMPG1\|ITPR2\|JAG1\|JPH2\|JUP\|KCNA4\|KCNA5\|KCNAB1\|KCNAB2\|KCND2\|KCND3\|KCNE1\|KCNE2\|KCNH2\|KCNH6\|KCNIP1\|KCNIP2\|KCNJ11\|KCNJ12\|KCNJ2\|KCNJ3\|KCNJ5\|KCNK1\|KCNK10\|KCNK13\|KCNK16\|KCNK17\|KCNK3\|KCNK5\|KCNK6\|KCNK9\|KCNMB1\|KCNN3\|KCNN4\|KCNQ1\|KIAA1797\|KLHL3\|KRAS\|KRT14\|KRT16\|KRT17\|KRT19\|KRT9\|LAD1\|LARP7\|LCAT\|LDB3\|LDLR\|LDLRAP1\|LIG3\|LIPA\|LMNA\|LPL\|LRAT\|LRP6\|LYRM5\|LYZ\|MADD\|MAP2K1\|MAP2K2\|MCM7\|MED1\|MED13L\|MEST\|MEX3A\|MIB1\|MIR100\|MIR107\|MIR126\|MIR132\|MIR134\|MIR136\|MIR137\|MIR140\|MIR141\|MIR143\|MIR144\|MIR145\|MIR149\|MIR150\|MIR152\|MIR154\|MIR155\|MIR182\|MIR183\|MIR185\|MIR186\|MIR190\|MIR195\|MIR197\|MIR200A\|MIR202\|MIR203\|MIR204\|MIR205\|MIR206\|MIR208A\|MIR208B\|MIR21\|MIR211\|MIR212\|MIR214\|MIR216A\|MIR216B\|MIR217\|MIR22\|MIR25\|MIR300\|MIR30A\|MIR30B\|MIR31\|MIR32\|MIR326\|MIR328\|MIR330\|MIR335\|MIR338\|MIR340\|MIR346\|MIR34A\|MIR34C\|MIR367\|MIR375\|MIR376B\|MIR376C\|MIR377\|MIR382\|MIR410\|MIR411\|MIR425\|MIR429\|MIR431\|MIR433\|MIR451\|MIR455\|MIR484\|MIR485\|MIR486|PIP5K1B\|PITX2\|PKP2\|PLN\|POLRMT\|PPARG\|PPP1R1A\|PRKAG2\|PSEN1\|PSEN2\|PTPN11\|RAB14\|RABEP2\|RAF1\|RASA1\|RBM20\|RNF130\|RRP8\|RTL1\|RYR2\|SC5DL\|SCN1B\|SCN4B\|SCN5A\|SETD6\|SFXN5\|SGCD\|SHOC2\|SLC2A10\|SLC6A2\|SLC9A1\|SNAPC5\|SNORA46\|SNORA50\|SNTA1\|SOS1\|SSH2\|STAMBPL1\|STARD3\|SUN1\|SUN2\|SYNE1\|SYNE2\|TAF10\|TARS2\|TBX1\|TBX20\|TBX5\|TCAP\|TEK\|TFEC\|TGFB3\|TGFBR1\|TGFBR2\|TJP2\|TLN2\|TLX2\|TMEM43\|TMPO\|TNNC1\|TNNI3\|TNNT2\|TPM1\|TPSG1\|TRPC1\|TRPC3\|TRPC4\|TRPC6\|TRPC7\|TRPM1\|TRPM3\|TTN\|TTR\|TXNDC5\|VAMP8\|VANGL1\|VCAN\|VCL\|VKORC1\|VPS13B\|VTI1A\|WIT1\|WNK1\|WT1\|WWP2\|ZFPM2\|ZNF221\|ZNF225\|ZNF230\|ZNF283\|ZRANB2\|BAG3\|DMD\|EMD\|GATAD1\|GLA\|LAMA4\|LAMP2\|LDB3\|MTND1\|MTND5\|MTND6\|MTTD\|MTTG\|MTTH\|MTTI\|MTTK\|MTTL1\|MTTL2\|MTTM\|MTTQ\|MTTS1\|MTTS2\|NEBL\|NRAS\|PDLIM3\|TAZ\|KCNE3\|KCNJ8\|NKX2.5\|RANGRF\|SCN3B"
+remove_nonCARDIOM_genes="ANKRD13C\|HAPLN2\|FIGLA\|ANKRD17\|HAPLN1\|ANKRD18B\|ANSKRDD13A\|PAPLN\|HAPLN3\|ANKRD11\|ANKRD12\|HAPLN4\|ANKRD13B\|DSPP\|CTDSPL\|DESI1\|DESI2\|CTDSPL2\|DESI1\|CTDSP2\|ANKRD13C\|HAPLN2\|FIGLA\|ANKRD17\|HAPLN1\|ANKRD18B\|ANSKRD16\|APLNR\|DAGLA\|ANKRD13A\|PAPLN\|HAPLN3\|ANKRD11\|ANKRD12|HAPLN4\|ANKRD13B\|CTTNBP2NL\|LEMD1\|LEMD2\|CTTNBP2\|ANKRD10\|RTTN\|PHLDB3\|APLN"
+
+#Variant Types
+missense="missense_variant\|nonsynonymous"
+synonymous="synonymous_variant\|synonymous" ##when filtering a file that uses nonsynonymous -- this will pick it up once the file is filtered us grep -v nonsynonymous
+stop_gain="stop_gained\|stopgain"
+stop_loss="stop_lost\|stoploss"
+framshift="frameshift_variant"
+upstream="upstream"
+three_prime_UTR="3_prime_UTR_variant\|UTR3"
+five_prime_UTR="5_prime_UTR_variant\|UTR5"
+start_lost="start_lost"
+premeture_start="premeture_start"
+intergenic="intergenic_region\|intergenic"
+exonic="missense_variant\|nonsynonymous\|synonymous_variant\|synonymous\|stop_gained\|stopgain\|stop_lost\|stoploss\|frameshift_variant"
+LOF="stop_gained\|stopgain\|start_lost"
+
+
+mkdir $Sample"_minQAUL_"$Min_QUAL
+
+#1. Filter on QUAL Score
+awk '$11>'$Min_QUAL $input > $filter_qual_output
+mv $filter_qual_output $Sample"_minQAUL_"$Min_QUAL
+cd $Sample"_minQAUL_"$Min_QUAL
+#2. Filter exonic variants
+grep $exonic $filter_qual_output > $exonic_output
+grep $LOF $filter_qual_output > $LOF_output
+
+#3. Filter for HCM genes
+mkdir HCM #Create a sub folder for HCM genes
+grep $HCM_genes $filter_qual_output > hcm_intermediate.txt #Search for all HCM genes and create an intermediate file (this grep function identifies non HCM genes as will with similar names)
+mv hcm_intermediate.txt HCM #move intermediate file to HCM directory
+cd HCM #change directories to HCM
+grep -v $remove_nonHCM_genes hcm_intermediate.txt > $HCMgenes_output #search and remove all non HCM genes identified in previous search. This is your complete list
+rm hcm_intermediate.txt #remove the intermediate file
+grep $exonic $HCMgenes_output > "Exonic_"$HCMgenes_output #search for only exonic variants
+
+cd .. #change to parent directory
+
+#4. filter for DCM genes
+mkdir DCM #Create a sub folder for DCM genes
+grep $DCM_genes $filter_qual_output > dcm_intermediate.txt #Search for all DCM genes and create an intermediate file (this grep function identifies non DCM genes as will with similar names)
+mv dcm_intermediate.txt DCM #move intermediate file to DCM directory
+cd DCM #change directories to DCM
+grep -v $remove_nonDCM_genes dcm_intermediate.txt > $DCMgenes_output #search and remove all non DCM genes identified in previous search. This is your complete list
+rm dcm_intermediate.txt #remove the intermediate file
+grep $exonic $DCMgenes_output > "Exonic_"$DCMgenes_output #search for only exonic variants
+
+cd .. #change to parent directory
+
+#5. filter for ARVC genes
+mkdir ARVC #Create a sub folder for ARVC genes
+grep $ARVC_genes $filter_qual_output > arvc_intermediate.txt #Search for all ARVC genes and create an intermediate file (this grep function identifies non ARVC genes as will with similar names)
+mv arvc_intermediate.txt ARVC #move intermediate file to ARVC directory
+cd ARVC #change directories to ARVC
+grep -v $remove_nonARVC_genes arvc_intermediate.txt > $ARVCgenes_output #search and remove all non ARVC genes identified in previous search. This is your complete list
+rm arvc_intermediate.txt #remove the intermediate file
+grep $exonic $ARVCgenes_output > "Exonic_"$ARVCgenes_output #search for only exonic variants
+
+cd .. #change to parent directory
+
+#6. filter for Cardiom genes
+mkdir CARDIOM #Create a sub folder for ARVC genes
+grep $Cardiom_genes $filter_qual_output > cardiom_intermediate.txt #Search for all ARVC genes and create an intermediate file (this grep function identifies non ARVC genes as will with similar names)
+mv cardiom_intermediate.txt CARDIOM #move intermediate file to ARVC directory
+cd CARDIOM #change directories to ARVC
+grep -v $remove_nonCARDIOM_genes cardiom_intermediate.txt > $CARDIOMgenes_output #search and remove all non ARVC genes identified in previous search. This is your complete list
+rm cardiom_intermediate.txt #remove the intermediate file
+grep $exonic $CARDIOMgenes_output > "Exonic_"$CARDIOMgenes_output #search for only exonic variants
+
+cd .. #change to parent directory
